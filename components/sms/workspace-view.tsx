@@ -8,6 +8,7 @@ import { DashboardHeader } from "@/components/dashboard/header"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
 import { StatusBadge } from "@/components/sms/status-badge"
 import { FormBuilder } from "@/components/sms/form-builder"
+import { AssignmentForm } from "@/components/teacher/assignment-form"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -138,7 +139,6 @@ function ContextPanel({ activeSection }: { activeSection: DashboardSection }) {
   return null
 }
 
-export function WorkspaceView({ role }: { role: Role }) {
 export function WorkspaceView({
   role,
   activeSection,
@@ -160,10 +160,6 @@ export function WorkspaceView({
   useEffect(() => {
     window.localStorage.setItem("sms-sidebar-collapsed", String(sidebarCollapsed))
   }, [sidebarCollapsed])
-
-  useEffect(() => {
-    setMobileOpen(false)
-  }, [activeSection, role])
 
   const activeMeta = useMemo(
     () => sectionTitles[activeSection] ?? sectionTitles.dashboard,
@@ -215,6 +211,7 @@ export function WorkspaceView({
                 activeDescription={activeMeta.description}
                 actions={config.quickActions}
               />
+              {role === "teacher" ? <AssignmentForm /> : null}
               <AlertsPanel alerts={config.alerts} />
             </div>
           </section>

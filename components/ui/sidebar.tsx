@@ -61,6 +61,11 @@ function SidebarItemButton({
   const Icon = iconMap[item.icon]
   const hasChildren = Boolean(item.children?.length)
   const href = getDashboardHref(role, item.id)
+  const handleNavigate = () => {
+    if (window.innerWidth < 1024) {
+      onNavigate()
+    }
+  }
 
   return (
     <div className="relative">
@@ -75,7 +80,7 @@ function SidebarItemButton({
         <Link
           href={href}
           className="flex min-w-0 flex-1 items-center gap-3"
-          onClick={onNavigate}
+          onClick={handleNavigate}
         >
           <span
             className={cn(
@@ -111,17 +116,17 @@ function SidebarItemButton({
 
             return (
               <Link
-              key={child.id}
-              href={childHref}
-              className={cn(
-                "rounded-xl px-3 py-2 text-left text-sm transition-colors",
-                activeSection === child.id
-                  ? "bg-slate-50 text-slate-950"
-                  : "text-slate-500 hover:bg-slate-50 hover:text-slate-950"
-              )}
-              onClick={onNavigate}
-            >
-              {child.label}
+                key={child.id}
+                href={childHref}
+                className={cn(
+                  "rounded-xl px-3 py-2 text-left text-sm transition-colors",
+                  activeSection === child.id
+                    ? "bg-slate-50 text-slate-950"
+                    : "text-slate-500 hover:bg-slate-50 hover:text-slate-950"
+                )}
+                onClick={handleNavigate}
+              >
+                {child.label}
               </Link>
             )
           })}
