@@ -61,6 +61,11 @@ export type RoleConfig = {
   title: string
   summary: string
   emphasis: string
+  userName: string
+  userTitle: string
+  searchPlaceholder: string
+  notificationCount: number
+  activity: string[]
   metrics: Metric[]
   alerts: AlertItem[]
   quickActions: QuickAction[]
@@ -97,6 +102,10 @@ export const roles: Array<{ value: Role; label: string }> = [
   { value: "accountant", label: "Accountant" },
 ]
 
+export function isRole(value: string): value is Role {
+  return roles.some((role) => role.value === value)
+}
+
 export const roleConfigs: Record<Role, RoleConfig> = {
   admin: {
     label: "Admin",
@@ -104,6 +113,16 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     summary:
       "Track enrollment, attendance, exams, revenue, and urgent exceptions from one calm workspace.",
     emphasis: "Campus pulse is healthy, but fees and grade publishing need attention this week.",
+    userName: "Nadia Hamza",
+    userTitle: "Operational admin",
+    searchPlaceholder: "Search students, invoices, messages...",
+    notificationCount: 5,
+    activity: [
+      "Admissions team shortlisted 5 new applicants this morning.",
+      "Midterm publishing moved 3 classes into final review.",
+      "Transport timing change was approved for Route 4.",
+      "Fee reminder batch sent to 18 families.",
+    ],
     metrics: [
       { label: "Students", value: "1,248", delta: "+4.8%", note: "24 new admissions this month" },
       { label: "Teachers", value: "86", delta: "+2", note: "3 vacancies still open" },
@@ -149,6 +168,16 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     summary:
       "Stay on top of classes, attendance, lesson planning, grading, and parent communication without jumping screens.",
     emphasis: "Your Grade 9 classes are on schedule, with one quiz still awaiting review.",
+    userName: "Noor Rahman",
+    userTitle: "Physics teacher",
+    searchPlaceholder: "Search students, classes, assignments...",
+    notificationCount: 7,
+    activity: [
+      "Grade 9A attendance was submitted 10 minutes ago.",
+      "Physics worksheet received 6 new submissions since lunch.",
+      "Parent meeting request from Sara Hassan is awaiting reply.",
+      "Lab inventory was confirmed for tomorrow's practical session.",
+    ],
     metrics: [
       { label: "Today's classes", value: "5", delta: "2 next", note: "Next class starts at 10:15 AM" },
       { label: "Pending grading", value: "34", delta: "-11", note: "Since yesterday evening" },
@@ -193,6 +222,16 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     summary:
       "Keep your timetable, assignments, grades, announcements, and exam readiness in one clear place.",
     emphasis: "You are on track academically and have two assignments due in the next three days.",
+    userName: "Mariam Hassan",
+    userTitle: "Grade 9A student",
+    searchPlaceholder: "Search classes, assignments, results...",
+    notificationCount: 3,
+    activity: [
+      "English oral feedback was published this morning.",
+      "Chemistry lab report reminder sent for Friday.",
+      "Library renewal window opens after class today.",
+      "Sports day schedule was added to announcements.",
+    ],
     metrics: [
       { label: "Upcoming classes", value: "4", delta: "1 in 40m", note: "Mathematics is next" },
       { label: "Assignments due", value: "2", delta: "-1", note: "One submitted this morning" },
@@ -237,6 +276,16 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     summary:
       "Follow your child's attendance, grades, fees, timetable, and teacher updates without waiting for a report cycle.",
     emphasis: "Attendance is strong overall, though one invoice and a science exam update need attention.",
+    userName: "Amina Hassan",
+    userTitle: "Parent account",
+    searchPlaceholder: "Search children, invoices, teacher updates...",
+    notificationCount: 4,
+    activity: [
+      "Physics teacher shared new feedback for Mariam Hassan.",
+      "Quarterly invoice reminder was delivered by email and SMS.",
+      "Route 4 pickup timing update was posted for Monday.",
+      "Science exam venue notice was added to family messages.",
+    ],
     metrics: [
       { label: "Children linked", value: "2", delta: "1 primary", note: "Mariam and Omar" },
       { label: "Attendance health", value: "95.9%", delta: "-0.8%", note: "Across linked students" },
@@ -281,6 +330,16 @@ export const roleConfigs: Record<Role, RoleConfig> = {
     summary:
       "Oversee billing, receipts, revenue targets, payroll signals, and overdue follow-ups in a single financial cockpit.",
     emphasis: "Collections are strong this month, but scholarship adjustments and three large balances remain open.",
+    userName: "Yousef Karim",
+    userTitle: "Finance office",
+    searchPlaceholder: "Search invoices, balances, receipts...",
+    notificationCount: 6,
+    activity: [
+      "Gateway settlement completed and reconciled this morning.",
+      "Three overdue high-balance accounts were escalated for review.",
+      "Scholarship validation batch moved into finance approval.",
+      "Payroll draft update was shared with the operations office.",
+    ],
     metrics: [
       { label: "Collected this month", value: "$143K", delta: "+12.7%", note: "Against monthly target" },
       { label: "Outstanding balance", value: "$38.6K", delta: "-6.1%", note: "Across 42 families" },
@@ -663,4 +722,39 @@ export const activityFeed = [
   "Midterm results exported to PDF",
   "Parent account auto-created for Omar Khaled",
   "Transport route 4 timing updated",
+]
+
+export const teacherAssignments = [
+  { title: "Physics worksheet review", detail: "18 submissions still need scores before 2:00 PM." },
+  { title: "Grade 9A parent follow-up", detail: "Share attendance update for Sara Hassan." },
+  { title: "Lab preparation checklist", detail: "Confirm goggles, kits, and seating groups for period three." },
+]
+
+export const studentAssignments = [
+  { title: "Chemistry lab report", detail: "Due Friday at 4:00 PM with PDF upload required." },
+  { title: "English reading response", detail: "Draft submitted, teacher feedback expected tomorrow." },
+  { title: "Mathematics practice set", detail: "8 of 10 problems completed with one retry left." },
+]
+
+export const parentChildren = [
+  { name: "Mariam Hassan", detail: "Grade 9A · Attendance 97.8% · GPA 3.82" },
+  { name: "Omar Khaled", detail: "Grade 7A · Attendance 95.1% · Fees installment active" },
+]
+
+export const parentUpdates = [
+  { title: "Teacher follow-up queued", detail: "Physics teacher will reply by this evening." },
+  { title: "Transport timing adjusted", detail: "Route 4 pickup is now 6:55 AM starting Monday." },
+  { title: "Science exam reminder", detail: "Venue changed to Lab A with arrival 20 minutes early." },
+]
+
+export const financeChecklist = [
+  { title: "High-value balances", detail: "3 accounts above $2,000 need manual review." },
+  { title: "Scholarship validation", detail: "9 discounts pending finance verification." },
+  { title: "Payroll draft review", detail: "2 staff adjustments still awaiting sign-off." },
+]
+
+export const studentHighlights = [
+  "Assembly starts at 7:45 AM tomorrow with house registration open from 7:20 AM.",
+  "Your English oral feedback was published with a distinction score this morning.",
+  "Library renewal closes Friday for two currently borrowed science titles.",
 ]

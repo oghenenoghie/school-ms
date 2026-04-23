@@ -1,5 +1,5 @@
-import { WorkspaceView } from "@/components/sms/workspace-view"
+import { redirect } from "next/navigation"
 
 export default function Home() {
-  return <WorkspaceView />
+  redirect("/dashboard/admin")
 }
