@@ -141,3 +141,87 @@
     background: rgb(20 184 166 / 0.18);
   }
 }
+
+@layer components {
+  .input {
+    @apply w-full rounded-lg border p-2;
+  }
+
+  .school-calendar .fc {
+    --fc-border-color: rgb(226 232 240);
+    --fc-page-bg-color: transparent;
+    --fc-neutral-bg-color: rgb(248 250 252 / 0.9);
+    --fc-today-bg-color: rgb(20 184 166 / 0.08);
+    --fc-event-border-color: transparent;
+    --fc-button-bg-color: rgb(15 23 42);
+    --fc-button-border-color: rgb(15 23 42);
+    --fc-button-hover-bg-color: rgb(30 41 59);
+    --fc-button-hover-border-color: rgb(30 41 59);
+    --fc-button-active-bg-color: rgb(13 148 136);
+    --fc-button-active-border-color: rgb(13 148 136);
+    --fc-non-business-color: transparent;
+    font-size: 0.95rem;
+  }
+
+  .school-calendar .fc-toolbar {
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .school-calendar .fc-toolbar-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: rgb(15 23 42);
+  }
+
+  .school-calendar .fc-button {
+    border-radius: 9999px;
+    box-shadow: none;
+    text-transform: capitalize;
+  }
+
+  .school-calendar .fc-col-header-cell-cushion,
+  .school-calendar .fc-daygrid-day-number,
+  .school-calendar .fc-timegrid-axis-cushion,
+  .school-calendar .fc-timegrid-slot-label-cushion {
+    color: rgb(15 23 42);
+  }
+
+  .school-calendar .fc-daygrid-day-frame,
+  .school-calendar .fc-timegrid-slot {
+    background: rgb(255 255 255 / 0.92);
+  }
+
+  .school-calendar .fc-day-today .fc-daygrid-day-frame,
+  .school-calendar .fc-day-today .fc-timegrid-col-frame {
+    background: rgb(20 184 166 / 0.08);
+  }
+
+  .school-calendar .fc-event {
+    border-radius: 9999px;
+    padding-inline: 0.25rem;
+    font-weight: 600;
+  }
+
+  .school-calendar .fc-event-main {
+    padding: 0.2rem 0.35rem;
+  }
+
+  .school-calendar .fc-theme-standard td,
+  .school-calendar .fc-theme-standard th,
+  .school-calendar .fc-theme-standard .fc-scrollgrid {
+    border-color: rgb(226 232 240);
+  }
+
+  @media (max-width: 768px) {
+    .school-calendar .fc-toolbar {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .school-calendar .fc-toolbar-chunk {
+      display: flex;
+      justify-content: center;
+    }
+  }
+}

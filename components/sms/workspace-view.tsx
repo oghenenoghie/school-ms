@@ -6,6 +6,8 @@ import dynamic from "next/dynamic"
 import { DashboardCards } from "@/components/dashboard/cards"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
+import { EmployeeDirectory } from "@/components/admin/employee-directory"
+import { HrmForms } from "@/components/sms/hrm-forms"
 import { StatusBadge } from "@/components/sms/status-badge"
 import { FormBuilder } from "@/components/sms/form-builder"
 import { AssignmentForm } from "@/components/teacher/assignment-form"
@@ -19,6 +21,7 @@ import {
 } from "@/components/ui/card"
 import { Sidebar } from "@/components/ui/sidebar"
 import {
+  calendarEventsByRole,
   chartContentByRole,
   sectionTitles,
   type DashboardSection,
@@ -35,6 +38,16 @@ const DashboardCharts = dynamic(
         <Card className="h-[420px] border border-white/80 bg-white/85 shadow-[0_24px_70px_-50px_rgba(15,23,42,0.5)]" />
         <Card className="h-[420px] border border-white/80 bg-white/85 shadow-[0_24px_70px_-50px_rgba(15,23,42,0.5)]" />
       </div>
+    ),
+  }
+)
+
+const EventCalendar = dynamic(
+  () => import("@/components/calendar/event-calendar"),
+  {
+    ssr: false,
+    loading: () => (
+      <Card className="h-[760px] border border-white/80 bg-white/85 shadow-[0_24px_70px_-50px_rgba(15,23,42,0.5)]" />
     ),
   }
 )
@@ -94,6 +107,54 @@ function AlertsPanel({
   )
 }
 
+function SectionFallback({
+  activeTitle,
+  activeDescription,
+  actions,
+  alerts,
+}: {
+  activeTitle: string
+  activeDescription: string
+  actions: Array<{ label: string; detail: string }>
+  alerts: Array<{ title: string; detail: string; tone: "default" | "info" | "success" | "warning" | "danger" }>
+}) {
+  return (
+    <section className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
+      <Card className="border border-white/80 bg-white/85 shadow-[0_24px_70px_-50px_rgba(15,23,42,0.5)]">
+        <CardHeader>
+          <CardTitle>{activeTitle} workspace</CardTitle>
+          <CardDescription>{activeDescription}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-5">
+          <div className="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+            <div className="text-xs font-semibold uppercase tracking-[0.24em] text-teal-700">
+              Focus area
+            </div>
+            <p className="mt-3 text-sm leading-6 text-slate-600">
+              This section now stays separate from the main dashboard overview so the workflow
+              remains focused and easier to scan.
+            </p>
+          </div>
+
+          <div className="grid gap-3">
+            {actions.map((action) => (
+              <div
+                key={action.label}
+                className="rounded-2xl border border-slate-200 bg-white p-4"
+              >
+                <div className="font-medium text-slate-950">{action.label}</div>
+                <p className="mt-2 text-sm leading-6 text-slate-600">{action.detail}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <AlertsPanel alerts={alerts} />
+    </section>
+  )
+}
+
 function ContextPanel({ activeSection }: { activeSection: DashboardSection }) {
   if (activeSection === "student-add") {
     return (
@@ -136,6 +197,23 @@ function ContextPanel({ activeSection }: { activeSection: DashboardSection }) {
     )
   }
 
+  if (activeSection === "employee-details") {
+    return (
+      <EmployeeDirectory
+        title="Employee Details"
+        description="Preview employee profiles and open the full detail modal from the HRM workspace."
+      />
+    )
+  }
+
+  if (
+    activeSection === "employee-add" ||
+    activeSection === "payroll" ||
+    activeSection === "designation"
+  ) {
+    return <HrmForms section={activeSection} />
+  }
+
   return null
 }
 
@@ -148,6 +226,7 @@ export function WorkspaceView({
 }) {
   const config = roleConfigs[role]
   const chartContent = chartContentByRole[role]
+  const isOverviewSection = activeSection === "dashboard"
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window === "undefined") {
       return false
@@ -165,6 +244,15 @@ export function WorkspaceView({
     () => sectionTitles[activeSection] ?? sectionTitles.dashboard,
     [activeSection]
   )
+  const hasContextPanel =
+    activeSection === "student-add" ||
+    activeSection === "employee-details" ||
+    activeSection === "employee-add" ||
+    activeSection === "payroll" ||
+    activeSection === "designation"
+  const contextContent = hasContextPanel ? (
+    <ContextPanel activeSection={activeSection} />
+  ) : null
 
   return (
     <div className="min-h-screen bg-[radial-gradient(circle_at_top,#f5f7ff_0%,#edf2f7_42%,#e7edf4_100%)] text-slate-950 dark:bg-[radial-gradient(circle_at_top,#0f172a_0%,#111827_42%,#020617_100%)] dark:text-slate-100">
@@ -194,35 +282,50 @@ export function WorkspaceView({
             onMobileToggle={() => setMobileOpen(true)}
           />
 
-          <DashboardCards metrics={config.metrics} />
+          {isOverviewSection ? <DashboardCards metrics={config.metrics} /> : null}
 
-          <section className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
-            <DashboardCharts
-              barTitle={chartContent.barTitle}
-              barDescription={chartContent.barDescription}
-              barData={chartContent.barData}
-              pieTitle={chartContent.pieTitle}
-              pieDescription={chartContent.pieDescription}
-              pieData={chartContent.pieData}
-            />
-            <div className="flex flex-col gap-6">
-              <QuickActionsPanel
-                activeTitle={activeMeta.title}
-                activeDescription={activeMeta.description}
-                actions={config.quickActions}
+          {isOverviewSection ? (
+            <section className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
+              <DashboardCharts
+                barTitle={chartContent.barTitle}
+                barDescription={chartContent.barDescription}
+                barData={chartContent.barData}
+                pieTitle={chartContent.pieTitle}
+                pieDescription={chartContent.pieDescription}
+                pieData={chartContent.pieData}
               />
-              {role === "teacher" ? <AssignmentForm /> : null}
-              <AlertsPanel alerts={config.alerts} />
-            </div>
-          </section>
+              <div className="flex flex-col gap-6">
+                <QuickActionsPanel
+                  activeTitle={activeMeta.title}
+                  activeDescription={activeMeta.description}
+                  actions={config.quickActions}
+                />
+                {role === "teacher" ? <AssignmentForm /> : null}
+                <AlertsPanel alerts={config.alerts} />
+              </div>
+            </section>
+          ) : contextContent ? (
+            contextContent
+          ) : (
+            <SectionFallback
+              activeTitle={activeMeta.title}
+              activeDescription={activeMeta.description}
+              actions={config.quickActions}
+              alerts={config.alerts}
+            />
+          )}
 
-          <ContextPanel activeSection={activeSection} />
+          {isOverviewSection ? (
+            <EventCalendar initialEvents={calendarEventsByRole[role]} />
+          ) : null}
 
-          <RecentActivity
-            rows={chartContent.recentActivity}
-            title="Recent activity"
-            description="A concise feed of student and finance activity for the current dashboard."
-          />
+          {isOverviewSection ? (
+            <RecentActivity
+              rows={chartContent.recentActivity}
+              title="Recent activity"
+              description="A concise feed of student and finance activity for the current dashboard."
+            />
+          ) : null}
         </div>
       </div>
     </div>

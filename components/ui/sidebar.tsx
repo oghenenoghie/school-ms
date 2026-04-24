@@ -4,6 +4,7 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import {
   BadgePercent,
+  BriefcaseBusiness,
   CalendarCheck2,
   ChevronDown,
   FileCheck2,
@@ -38,6 +39,7 @@ const iconMap = {
   "file-check-2": FileCheck2,
   "badge-percent": BadgePercent,
   wallet: Wallet,
+  "briefcase-business": BriefcaseBusiness,
   "settings-2": Settings2,
 } satisfies Record<SidebarMenuItem["icon"], typeof LayoutDashboard>
 
@@ -97,7 +99,7 @@ function SidebarItemButton({
             type="button"
             className="rounded-xl p-2 transition-colors hover:bg-white/10"
             onClick={onToggleOpen}
-            aria-label={isOpen ? "Collapse student menu" : "Expand student menu"}
+            aria-label={isOpen ? `Collapse ${item.label} menu` : `Expand ${item.label} menu`}
           >
             <ChevronDown
               className={cn(
@@ -167,8 +169,21 @@ export function Sidebar({
     activeSection === "students" ||
     activeSection === "student-list" ||
     activeSection === "student-add"
-  const [studentsOpen, setStudentsOpen] = useState(defaultStudentsOpen)
-  const studentsVisible = studentsOpen || defaultStudentsOpen
+  const defaultHrmOpen =
+    activeSection === "hrm" ||
+    activeSection === "employee-details" ||
+    activeSection === "employee-add" ||
+    activeSection === "payroll" ||
+    activeSection === "designation" ||
+    activeSection === "department"
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>({
+    students: defaultStudentsOpen,
+    hrm: defaultHrmOpen,
+  })
+  const menuItems = useMemo(
+    () => sidebarMenu.filter((item) => !item.roles || item.roles.includes(role)),
+    [role]
+  )
 
   return (
     <>
@@ -229,11 +244,16 @@ export function Sidebar({
 
         <div className="mt-4 flex-1 overflow-y-auto px-3 pb-3">
           <nav className="flex flex-col gap-1">
-            {sidebarMenu.map((item) => {
+            {menuItems.map((item) => {
               const isActive =
                 activeSection === item.id ||
                 item.children?.some((child) => child.id === activeSection) ||
                 false
+              const defaultOpen =
+                activeSection === item.id ||
+                item.children?.some((child) => child.id === activeSection) ||
+                false
+              const isOpen = openSections[item.id] ?? defaultOpen
 
               return (
                 <SidebarItemButton
@@ -241,8 +261,13 @@ export function Sidebar({
                   role={role}
                   item={item}
                   active={isActive}
-                  isOpen={studentsVisible}
-                  onToggleOpen={() => setStudentsOpen((current) => !current)}
+                  isOpen={isOpen}
+                  onToggleOpen={() =>
+                    setOpenSections((current) => ({
+                      ...current,
+                      [item.id]: !isOpen,
+                    }))
+                  }
                   activeSection={activeSection}
                   onNavigate={onCloseMobile}
                 />

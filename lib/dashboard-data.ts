@@ -5,6 +5,12 @@ export type DashboardSection =
   | "students"
   | "student-list"
   | "student-add"
+  | "hrm"
+  | "employee-details"
+  | "employee-add"
+  | "payroll"
+  | "designation"
+  | "department"
   | "teachers"
   | "classes"
   | "attendance"
@@ -16,6 +22,7 @@ export type DashboardSection =
 export type SidebarMenuItem = {
   id: DashboardSection
   label: string
+  roles?: Role[]
   icon:
     | "layout-dashboard"
     | "users"
@@ -25,6 +32,7 @@ export type SidebarMenuItem = {
     | "file-check-2"
     | "badge-percent"
     | "wallet"
+    | "briefcase-business"
     | "settings-2"
   children?: Array<{
     id: DashboardSection
@@ -44,6 +52,15 @@ export type DistributionPoint = {
   color: string
 }
 
+export type CalendarEventSeed = {
+  id: string
+  title: string
+  start: string
+  end?: string
+  allDay?: boolean
+  color: string
+}
+
 export type RecentActivityRow = {
   id: string
   student: string
@@ -57,6 +74,12 @@ export const dashboardSections = [
   "students",
   "student-list",
   "student-add",
+  "hrm",
+  "employee-details",
+  "employee-add",
+  "payroll",
+  "designation",
+  "department",
   "teachers",
   "classes",
   "attendance",
@@ -83,10 +106,24 @@ export const sidebarMenu: SidebarMenuItem[] = [
   {
     id: "students",
     label: "Students",
+    roles: ["admin"],
     icon: "users",
     children: [
       { id: "student-list", label: "List" },
       { id: "student-add", label: "Add Student" },
+    ],
+  },
+  {
+    id: "hrm",
+    label: "HRM",
+    roles: ["admin"],
+    icon: "briefcase-business",
+    children: [
+      { id: "employee-details", label: "Employee Details" },
+      { id: "employee-add", label: "Add New Employee" },
+      { id: "payroll", label: "Payroll" },
+      { id: "designation", label: "Designation" },
+      { id: "department", label: "Department" },
     ],
   },
   { id: "teachers", label: "Teachers", icon: "graduation-cap" },
@@ -117,6 +154,30 @@ export const sectionTitles: Record<
   "student-add": {
     title: "Add Student",
     description: "Quick-create a new student profile from the sidebar flow.",
+  },
+  hrm: {
+    title: "HRM",
+    description: "Manage employee records, payroll, designations, and departments.",
+  },
+  "employee-details": {
+    title: "Employee Details",
+    description: "Review employee records, contact details, and employment status.",
+  },
+  "employee-add": {
+    title: "Add New Employee",
+    description: "Create a new employee profile for faculty or operations staff.",
+  },
+  payroll: {
+    title: "Payroll",
+    description: "Track salary processing, payouts, and payroll readiness.",
+  },
+  designation: {
+    title: "Designation",
+    description: "Maintain job titles, reporting levels, and role assignments.",
+  },
+  department: {
+    title: "Department",
+    description: "Organize employees by department and operational ownership.",
   },
   teachers: {
     title: "Teachers",
@@ -283,4 +344,107 @@ export const chartContentByRole: Record<
       { id: "r4", student: "Ibrahim Family", className: "Invoice INV-2051", status: "Paid", date: "Apr 20" },
     ],
   },
+}
+
+export const calendarEventsByRole: Record<Role, CalendarEventSeed[]> = {
+  admin: [
+    {
+      id: "admin-staff-meeting",
+      title: "Staff Meeting",
+      start: "2026-04-26",
+      color: "#2563eb",
+    },
+    {
+      id: "admin-math-exam",
+      title: "Math Exam",
+      start: "2026-04-28",
+      color: "#16a34a",
+    },
+    {
+      id: "admin-parent-council",
+      title: "Parent Council",
+      start: "2026-05-03",
+      color: "#f59e0b",
+    },
+  ],
+  teacher: [
+    {
+      id: "teacher-lab-prep",
+      title: "Lab Preparation",
+      start: "2026-04-27",
+      color: "#0f766e",
+    },
+    {
+      id: "teacher-physics-quiz",
+      title: "Physics Quiz",
+      start: "2026-04-28",
+      color: "#2563eb",
+    },
+    {
+      id: "teacher-parent-call",
+      title: "Parent Call Window",
+      start: "2026-04-29",
+      color: "#7c3aed",
+    },
+  ],
+  student: [
+    {
+      id: "student-chemistry-report",
+      title: "Chemistry Lab Report",
+      start: "2026-04-27",
+      color: "#0f766e",
+    },
+    {
+      id: "student-math-revision",
+      title: "Math Revision Session",
+      start: "2026-04-29",
+      color: "#2563eb",
+    },
+    {
+      id: "student-sports-day",
+      title: "Sports Day",
+      start: "2026-05-01",
+      color: "#f59e0b",
+    },
+  ],
+  parent: [
+    {
+      id: "parent-fee-reminder",
+      title: "Fee Reminder",
+      start: "2026-04-26",
+      color: "#dc2626",
+    },
+    {
+      id: "parent-science-exam",
+      title: "Science Exam",
+      start: "2026-04-30",
+      color: "#2563eb",
+    },
+    {
+      id: "parent-transport-update",
+      title: "Transport Update",
+      start: "2026-05-02",
+      color: "#16a34a",
+    },
+  ],
+  accountant: [
+    {
+      id: "accountant-invoice-review",
+      title: "Invoice Review",
+      start: "2026-04-26",
+      color: "#2563eb",
+    },
+    {
+      id: "accountant-payroll-cutoff",
+      title: "Payroll Cutoff",
+      start: "2026-04-28",
+      color: "#0f766e",
+    },
+    {
+      id: "accountant-settlement-day",
+      title: "Settlement Day",
+      start: "2026-05-04",
+      color: "#f59e0b",
+    },
+  ],
 }
