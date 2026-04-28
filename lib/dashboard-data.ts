@@ -5,6 +5,10 @@ export type DashboardSection =
   | "students"
   | "student-list"
   | "student-add"
+  | "timetable"
+  | "assignments"
+  | "messages"
+  | "subjects"
   | "hrm"
   | "employee-details"
   | "employee-add"
@@ -32,6 +36,9 @@ export type SidebarMenuItem = {
     | "file-check-2"
     | "badge-percent"
     | "wallet"
+    | "messages-square"
+    | "book-open-text"
+    | "clipboard-list"
     | "briefcase-business"
     | "settings-2"
   children?: Array<{
@@ -74,6 +81,10 @@ export const dashboardSections = [
   "students",
   "student-list",
   "student-add",
+  "timetable",
+  "assignments",
+  "messages",
+  "subjects",
   "hrm",
   "employee-details",
   "employee-add",
@@ -103,6 +114,14 @@ export function getDashboardHref(role: Role, section: DashboardSection) {
 
 export const sidebarMenu: SidebarMenuItem[] = [
   { id: "dashboard", label: "Dashboard", icon: "layout-dashboard" },
+  { id: "timetable", label: "Timetable", roles: ["student"], icon: "school" },
+  { id: "assignments", label: "Assignments", roles: ["student"], icon: "clipboard-list" },
+  { id: "results", label: "Results", roles: ["student"], icon: "badge-percent" },
+  { id: "attendance", label: "Attendance", roles: ["student"], icon: "calendar-check-2" },
+  { id: "messages", label: "Messages", roles: ["student"], icon: "messages-square" },
+  { id: "fees", label: "Fees", roles: ["student"], icon: "wallet" },
+  { id: "subjects", label: "Subjects", roles: ["student"], icon: "book-open-text" },
+  { id: "settings", label: "Settings", roles: ["student"], icon: "settings-2" },
   {
     id: "students",
     label: "Students",
@@ -154,6 +173,22 @@ export const sectionTitles: Record<
   "student-add": {
     title: "Add Student",
     description: "Quick-create a new student profile from the sidebar flow.",
+  },
+  timetable: {
+    title: "Timetable",
+    description: "Review today's and weekly class schedule with teacher and subject timing.",
+  },
+  assignments: {
+    title: "Assignments",
+    description: "Track homework, submissions, and upcoming coursework deadlines.",
+  },
+  messages: {
+    title: "Messages",
+    description: "Read school and teacher conversations without leaving the student workspace.",
+  },
+  subjects: {
+    title: "Subjects",
+    description: "See subject ownership, classroom expectations, and course coverage.",
   },
   hrm: {
     title: "HRM",

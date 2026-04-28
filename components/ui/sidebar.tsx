@@ -4,14 +4,17 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import {
   BadgePercent,
+  BookOpenText,
   BriefcaseBusiness,
   CalendarCheck2,
   ChevronDown,
+  ClipboardList,
   FileCheck2,
   GraduationCap,
   LayoutDashboard,
   LogOut,
   Menu,
+  MessagesSquare,
   School,
   Settings2,
   Users,
@@ -39,6 +42,9 @@ const iconMap = {
   "file-check-2": FileCheck2,
   "badge-percent": BadgePercent,
   wallet: Wallet,
+  "messages-square": MessagesSquare,
+  "book-open-text": BookOpenText,
+  "clipboard-list": ClipboardList,
   "briefcase-business": BriefcaseBusiness,
   "settings-2": Settings2,
 } satisfies Record<SidebarMenuItem["icon"], typeof LayoutDashboard>

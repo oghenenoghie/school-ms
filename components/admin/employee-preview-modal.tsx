@@ -100,9 +100,18 @@ export function EmployeePreviewModal({
               Subject: <span className="font-medium text-slate-950">{employee.subject}</span>
             </p>
           </div>
-          <Button type="button" variant="outline" size="icon" onClick={onClose}>
-            <X />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setActiveTab("employee-details")}
+            >
+              Edit details
+            </Button>
+            <Button type="button" variant="outline" size="icon" onClick={onClose}>
+              <X />
+            </Button>
+          </div>
         </div>
 
         <div className="max-h-[calc(92vh-96px)] overflow-y-auto bg-slate-50/80 px-6 py-6">

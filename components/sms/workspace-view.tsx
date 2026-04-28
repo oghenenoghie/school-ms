@@ -3,11 +3,13 @@
 import { useEffect, useMemo, useState } from "react"
 import dynamic from "next/dynamic"
 
+import { EmployeeDetailsForm } from "@/components/admin/employee-details-form"
 import { DashboardCards } from "@/components/dashboard/cards"
 import { DashboardHeader } from "@/components/dashboard/header"
 import { RecentActivity } from "@/components/dashboard/recent-activity"
-import { EmployeeDirectory } from "@/components/admin/employee-directory"
 import { HrmForms } from "@/components/sms/hrm-forms"
+import { StudentDashboardPanel } from "@/components/sms/student-dashboard-panel"
+import { StudentMenuDetails } from "@/components/sms/student-menu-details"
 import { StatusBadge } from "@/components/sms/status-badge"
 import { FormBuilder } from "@/components/sms/form-builder"
 import { AssignmentForm } from "@/components/teacher/assignment-form"
@@ -198,12 +200,7 @@ function ContextPanel({ activeSection }: { activeSection: DashboardSection }) {
   }
 
   if (activeSection === "employee-details") {
-    return (
-      <EmployeeDirectory
-        title="Employee Details"
-        description="Preview employee profiles and open the full detail modal from the HRM workspace."
-      />
-    )
+    return <EmployeeDetailsForm />
   }
 
   if (
@@ -227,6 +224,17 @@ export function WorkspaceView({
   const config = roleConfigs[role]
   const chartContent = chartContentByRole[role]
   const isOverviewSection = activeSection === "dashboard"
+  const isStudentOverview = role === "student" && isOverviewSection
+  const isStudentDetailSection =
+    role === "student" &&
+    (activeSection === "timetable" ||
+      activeSection === "assignments" ||
+      activeSection === "results" ||
+      activeSection === "attendance" ||
+      activeSection === "messages" ||
+      activeSection === "fees" ||
+      activeSection === "subjects" ||
+      activeSection === "settings")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(() => {
     if (typeof window === "undefined") {
       return false
@@ -282,9 +290,15 @@ export function WorkspaceView({
             onMobileToggle={() => setMobileOpen(true)}
           />
 
-          {isOverviewSection ? <DashboardCards metrics={config.metrics} /> : null}
+          {isOverviewSection && !isStudentOverview ? (
+            <DashboardCards metrics={config.metrics} />
+          ) : null}
 
-          {isOverviewSection ? (
+          {isStudentOverview ? (
+            <StudentDashboardPanel />
+          ) : isStudentDetailSection ? (
+            <StudentMenuDetails section={activeSection} />
+          ) : isOverviewSection ? (
             <section className="grid gap-6 xl:grid-cols-[1.45fr_0.95fr]">
               <DashboardCharts
                 barTitle={chartContent.barTitle}
@@ -315,11 +329,11 @@ export function WorkspaceView({
             />
           )}
 
-          {isOverviewSection ? (
+          {isOverviewSection && !isStudentOverview ? (
             <EventCalendar initialEvents={calendarEventsByRole[role]} />
           ) : null}
 
-          {isOverviewSection ? (
+          {isOverviewSection && !isStudentOverview ? (
             <RecentActivity
               rows={chartContent.recentActivity}
               title="Recent activity"
